@@ -17,7 +17,7 @@ export default function NumInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="bg-transparent text-center text-white text-sm outline-none w-28 placeholder:text-zinc-600 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+        className="bg-transparent text-center text-white text-sm outline-none w-20 placeholder:text-zinc-600 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
       />
       {suffix && <span className="text-zinc-500 text-sm">{suffix}</span>}
     </div>

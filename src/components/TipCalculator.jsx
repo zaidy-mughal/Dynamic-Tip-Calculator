@@ -40,7 +40,7 @@ export default function TipCalculator() {
     n.toLocaleString("en-US", { style: "currency", currency: "USD" });
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-zinc-950 p-6">
+    <div className="min-h-screen flex justify-center bg-zinc-950 p-6">
       <div className="flex flex-col items-center gap-10 w-full max-w-xs">
         {/* Title */}
         <div className="text-center">
@@ -50,10 +50,26 @@ export default function TipCalculator() {
           <p className="text-xs text-zinc-500 mt-1.5">
             Instantly split your bill
           </p>
+
+          <button
+            onClick={() => {
+              setBill("");
+              setTipPercent("");
+              setPeople("1");
+            }}
+            className="cursor-pointer rounded-lg border border-zinc-300
+                bg-black px-4 py-2 text-sm font-medium text-zinc-700
+                shadow-sm transition-all duration-200 mt-3
+                hover:border-zinc-400 hover:bg-zinc-100 hover:text-zinc-900
+                active:scale-[0.98]
+              "
+          >
+            Clear
+          </button>
         </div>
 
         {/* Fields */}
-        <div className="flex flex-col items-center gap-1 w-full">
+        <div className="flex flex-col gap-5 w-full">
           <Field label="Bill Amount" error={billError}>
             <NumInput
               value={bill}
@@ -64,7 +80,7 @@ export default function TipCalculator() {
             />
           </Field>
 
-          <Field label="Tip Percentage" error={tipError}>
+          <Field label="Tip Percentage: " error={tipError}>
             {/* Quick-select */}
             <div className="flex gap-2 mb-1">
               {QUICK_TIPS.map((t) => (
@@ -82,14 +98,15 @@ export default function TipCalculator() {
                   {t}%
                 </button>
               ))}
+
+              <NumInput
+                value={tipPercent}
+                onChange={setTipPercent}
+                placeholder="custom"
+                suffix="%"
+                hasError={!!tipError}
+              />
             </div>
-            <NumInput
-              value={tipPercent}
-              onChange={setTipPercent}
-              placeholder="custom"
-              suffix="%"
-              hasError={!!tipError}
-            />
           </Field>
 
           <Field label="Number of People" error={peopleError}>
@@ -135,20 +152,6 @@ export default function TipCalculator() {
             large
           />
         </div>
-
-        {/* Clear */}
-        {(bill || tipPercent || people !== "1") && (
-          <button
-            onClick={() => {
-              setBill("");
-              setTipPercent("");
-              setPeople("1");
-            }}
-            className="text-xs text-zinc-600 hover:text-zinc-400 transition-colors cursor-pointer"
-          >
-            clear
-          </button>
-        )}
       </div>
     </div>
   );
