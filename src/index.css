@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    color: rgb(24 24 27);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+  }
+
+  input {
+    font: inherit;
+  }
+
+  button {
+    font: inherit;
+    cursor: pointer;
+  }
+}
