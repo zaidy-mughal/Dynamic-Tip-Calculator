@@ -12,7 +12,7 @@ export default function TipCalculator() {
 
   const numericBill = Number(bill) || 0;
   const numericTipPercent = Number(tipPercent) || 0;
-  const numericPeople = Math.max(Number(people) || 1, 1);
+  const numericPeople = Number(people);
 
   const tipAmountCalc = (numericBill * numericTipPercent) / 100;
   const grandTotalCalc = numericBill + tipAmountCalc;
@@ -23,15 +23,15 @@ export default function TipCalculator() {
   const tipError =
     tipPercent === ""
       ? ""
-      : numericTipPercent >= 0 && numericTipPercent <= 100
+      : numericTipPercent >= 0 && numericTipPercent <= 30
         ? ""
         : "Must be between 0 and 100.";
   const peopleError =
     people === ""
       ? ""
-      : numericPeople >= 1
-        ? ""
-        : "At least 1 person required.";
+      : !Number.isInteger(numericPeople) || numericPeople < 1
+        ? "Number of people must be at least 1."
+        : "";
 
   const hasError = !!billError || !!tipError || !!peopleError;
   const hasValues = numericBill > 0 && !hasError;
@@ -41,8 +41,7 @@ export default function TipCalculator() {
 
   return (
     <div className="min-h-screen flex justify-center bg-zinc-950 p-6">
-      <div className="flex flex-col items-center gap-10 w-full max-w-xs">
-        {/* Title */}
+      <div className="flex flex-col items-center gap-5 w-full max-w-xl">
         <div className="text-center">
           <h1 className="text-3xl font-light tracking-tight text-white">
             Tip Calculator
@@ -68,9 +67,8 @@ export default function TipCalculator() {
           </button>
         </div>
 
-        {/* Fields */}
-        <div className="flex flex-col gap-5 w-full">
-          <Field label="Bill Amount" error={billError}>
+        <div className="flex flex-col gap-5 w-full border rounded-lg border-zinc-800 bg-zinc-900 p-2">
+          <Field label="Bill Amount ($ >= 0): " error={billError}>
             <NumInput
               value={bill}
               onChange={setBill}
@@ -80,8 +78,7 @@ export default function TipCalculator() {
             />
           </Field>
 
-          <Field label="Tip Percentage: " error={tipError}>
-            {/* Quick-select */}
+          <Field label="Tip Percentage(0-30%): " error={tipError}>
             <div className="flex gap-2 mb-1">
               {QUICK_TIPS.map((t) => (
                 <button
@@ -98,18 +95,18 @@ export default function TipCalculator() {
                   {t}%
                 </button>
               ))}
-
-              <NumInput
-                value={tipPercent}
-                onChange={setTipPercent}
-                placeholder="custom"
-                suffix="%"
-                hasError={!!tipError}
-              />
             </div>
+
+            <NumInput
+              value={tipPercent}
+              onChange={setTipPercent}
+              placeholder="custom"
+              suffix="%"
+              hasError={!!tipError}
+            />
           </Field>
 
-          <Field label="Number of People" error={peopleError}>
+          <Field label="Number of People (>=1): " error={peopleError}>
             <NumInput
               value={people}
               onChange={setPeople}
@@ -119,12 +116,8 @@ export default function TipCalculator() {
           </Field>
         </div>
 
-        {/* Divider */}
-        <div className="w-16 border-t border-zinc-800" />
-
-        {/* Results */}
         <div className="flex flex-col items-center gap-6 w-full">
-          <div className="flex justify-center gap-12">
+          <div className="flex flex-wrap flex-1 justify-center gap-2">
             <ResultLine
               label="Tip"
               sub="amount added"
@@ -135,22 +128,16 @@ export default function TipCalculator() {
               sub="bill + tip"
               value={hasValues ? fmt(grandTotalCalc) : "$0.00"}
             />
+            <ResultLine
+              label={"Per Person"}
+              value={
+                hasValues
+                  ? fmt(numericPeople > 1 ? perPersonCalc : grandTotalCalc)
+                  : "$0.00"
+              }
+              large
+            />
           </div>
-
-          <ResultLine
-            label={numericPeople > 1 ? `Per Person` : "You pay"}
-            sub={
-              numericPeople > 1
-                ? `split equally among ${numericPeople}`
-                : "total"
-            }
-            value={
-              hasValues
-                ? fmt(numericPeople > 1 ? perPersonCalc : grandTotalCalc)
-                : "$0.00"
-            }
-            large
-          />
         </div>
       </div>
     </div>
