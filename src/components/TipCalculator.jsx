@@ -12,11 +12,31 @@ export default function TipCalculator() {
 
   const numericBill = Number(bill) || 0;
   const numericTipPercent = Number(tipPercent) || 0;
-  const numericPeople = Number(people);
+  const numericPeople = Number(people) || 1;
 
   const tipAmountCalc = (numericBill * numericTipPercent) / 100;
   const grandTotalCalc = numericBill + tipAmountCalc;
-  const perPersonCalc = grandTotalCalc / numericPeople;
+
+  const splitWithRotatingCents = (total, people) => {
+    const totalCents = Math.round(total * 100);
+
+    const base = Math.floor(totalCents / people);
+    const remainder = totalCents % people;
+
+    const result = Array(people).fill(base);
+
+    // rotate remainder distribution
+    for (let i = 0; i < remainder; i++) {
+      const index = i % people;
+      result[index] += 1;
+    }
+
+    return result.map((c) => c / 100);
+  };
+
+  const perPersonList = splitWithRotatingCents(grandTotalCalc, numericPeople);
+
+  const perPersonCalc = numericPeople > 0 ? perPersonList[0] : 0;
 
   const billError =
     bill === "" ? "" : numericBill > 0 ? "" : "Must be a positive number.";
@@ -40,7 +60,7 @@ export default function TipCalculator() {
     n.toLocaleString("en-US", { style: "currency", currency: "USD" });
 
   return (
-    <div className="min-h-screen flex justify-center bg-zinc-950 p-6">
+    <div className="min-h-[100svh] overflow-y-auto pb-safe flex justify-center bg-zinc-950 p-6">
       <div className="flex flex-col items-center gap-5 w-full max-w-xl">
         <div className="text-center">
           <h1 className="text-3xl font-light tracking-tight text-white">
