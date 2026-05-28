@@ -12,7 +12,7 @@ export default function TipCalculator() {
 
   const numericBill = Number(bill) || 0;
   const numericTipPercent = Number(tipPercent) || 0;
-  const numericPeople = Number(people) || 1;
+  const numericPeople = people === "" ? 0 : Number(people);
 
   const tipAmountCalc = (numericBill * numericTipPercent) / 100;
   const grandTotalCalc = numericBill + tipAmountCalc;
@@ -34,9 +34,12 @@ export default function TipCalculator() {
     return result.map((c) => c / 100);
   };
 
-  const perPersonList = splitWithRotatingCents(grandTotalCalc, numericPeople);
+  const perPersonList =
+    numericPeople >= 1
+      ? splitWithRotatingCents(grandTotalCalc, numericPeople)
+      : [0];
 
-  const perPersonCalc = numericPeople > 0 ? perPersonList[0] : 0;
+  const perPersonCalc = numericPeople >= 1 ? perPersonList[0] : 0;
 
   const billError =
     bill === "" ? "" : numericBill > 0 ? "" : "Must be a positive number.";
@@ -45,7 +48,7 @@ export default function TipCalculator() {
       ? ""
       : numericTipPercent >= 0 && numericTipPercent <= 30
         ? ""
-        : "Must be between 0 and 100.";
+        : "Must be between 0 and 30.";
   const peopleError =
     people === ""
       ? ""
